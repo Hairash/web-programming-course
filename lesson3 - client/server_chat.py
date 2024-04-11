@@ -6,18 +6,20 @@ messages = []
 
 
 @app.route('/', methods=['GET'])
-def hello_world():
-    return f'All the messages: {messages}'
+def main_page():
+    message_strs = [f'{m["author"]}: {m["message"]}' for m in messages]
+    return '<br>'.join(message_strs)
 
 
 @app.route('/messages', methods=['GET', 'POST'])  # methods allowed for this URL
 def handle_app():
     if request.method == 'GET':
-        return 'Send POST request with some data'
+        return 'Send your message with the POST request'
     elif request.method == 'POST':
-        decoded_data = request.data.decode('utf-8')
-        messages.append(decoded_data)
-        return f'You sent data: {decoded_data}'
+        # decoded_data = request.data.decode('utf-8')
+        # request.json['author']
+        messages.append(request.json)
+        return f'You sent data: {request.json}'
 
 
 if __name__ == '__main__':

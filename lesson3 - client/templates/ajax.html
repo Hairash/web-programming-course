@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sticks</title>
+</head>
+<body>
+    <span id='table'>{{ sticks }}</span> sticks left
+    <br>
+    <label for='sticks'>Sticks to take:</label>
+    <input type='text' id='sticks' name='sticks' required>
+    <button type='button' id='takeBtn'>Take</button>
+
+    <script>
+        document.getElementById('takeBtn').addEventListener('click', function(event) {
+            const sticks = document.getElementById('sticks').value;
+
+            fetch('/take', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ sticks: sticks }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                document.getElementById('sticks').value = '';
+                document.getElementById('table').innerHTML = data.table;
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>

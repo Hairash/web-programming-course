@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form Submission</title>
+</head>
+<body>
+    {{ sticks }} sticks left
+    <br>
+    <form action="/take" method="post">
+        <label for="sticks">Sticks to take:</label>
+        <input type="number" id="sticks" name="sticks">
+        <button type="submit">Take</button>
+    </form>
+</body>
+</html>
