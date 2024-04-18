@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sticks</title>
+</head>
+<body>
+    <h3>List of tasks</h3>
+    <!-- Just a block element with unique id -->
+    <span id="task-list"> {{ ','.join(tasks) }} </span>
+    <h3>Add new task</h3>
+
+    <label for="task">Enter task:</label>
+    <input type="text" id="task">
+    <br>
+    <label for="answer-input">Enter answer:</label>
+    <input type="text" id="answer-input">
+    <br>
+    <!-- Type is usual "button, "submit" makes sense only inside the form -->
+    <button type="button" id="addBtn">Send task</button>
+
+    <script>
+        // Javascript code starts here
+        // Doesn't matter which quotes do you use single (') or double (")
+        // Add handler for the button - this function will be called on press button
+        document.getElementById('addBtn').addEventListener('click', function(event) {
+            // get element by id specified as "id"
+            const task = document.getElementById('task').value;
+            const answer = document.getElementById('answer-input').value;
+
+            // Send request
+            fetch('/tasks', {
+                method: 'POST',
+                // Specify content-type - JSON
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                // Magic function making JSON from dict
+                body: JSON.stringify({ task: task, answer: answer }),
+            })
+            // Just some magic there
+            .then(response => response.json())
+            .then(data => {
+                // Process the data, returned from the server
+                console.log(data);
+                console.log(data.toString());
+                // Clear inputs
+                document.getElementById('task').value = '';
+                document.getElementById('answer-input').value = '';
+                // Output all the tasks, received from the server
+                document.getElementById('task-list').innerHTML = data.tasks.toString();
+            })
+            // Handle errors
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>

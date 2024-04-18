@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web-programming</title>
+</head>
+<body>
+    <h3>List of tasks</h3>
+    {{ tasks }}  <!-- pass values into html template -->
+    <h3>Add new task</h3>
+    <!-- action - endpoint, method - method,
+    so after pressing "submit" button the POST /tasks request will be sent -->
+    <form action="tasks" method="post">
+        <label for="task">Enter task:</label>  <!-- "task" here is id of input -->
+        <!-- id - unique id of html element,
+        name - name of parameter, how will it be passed to the server -->
+        <input type="text" id="task" name="task">
+        <br>
+        <!-- id and name can be different -->
+        <label for="answer-input">Enter answer:</label>
+        <input type="text" id="answer-input" name="answer">
+        <br>
+        <button type="submit">Send task</button>
+    </form>
+</body>
+</html>
