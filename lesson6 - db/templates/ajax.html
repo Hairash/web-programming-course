@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sticks</title>
+</head>
+<body>
+    <!-- The same html page as before, nothing changed -->
+    <h3>List of tasks</h3>
+    <span id="task-list"> {{ ','.join(tasks) }} </span>
+    <h3>Add new task</h3>
+
+    <label for="task">Enter task:</label>
+    <input type="text" id="task">
+    <br>
+    <label for="answer-input">Enter answer:</label>
+    <input type="text" id="answer-input">
+    <br>
+    <button type="button" id="addBtn">Send task</button>
+
+    <script>
+        document.getElementById('addBtn').addEventListener('click', function(event) {
+            const task = document.getElementById('task').value;
+            const answer = document.getElementById('answer-input').value;
+
+            fetch('/tasks', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ task: task, answer: answer }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                console.log(data.toString());
+                document.getElementById('task').value = '';
+                document.getElementById('answer-input').value = '';
+                document.getElementById('task-list').innerHTML = data.tasks.toString();
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
