@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Song base</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const songs = document.querySelectorAll('.song a');
+            songs.forEach(song => {
+                song.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const songId = this.getAttribute('data-id');
+                    fetch(`/songs/${songId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const lyricsDiv = document.getElementById('lyrics');
+                            lyricsDiv.textContent = data.lyrics || 'No lyrics found.';
+                        })
+                        .catch(error => {
+                            console.error('Error fetching lyrics:', error);
+                            document.getElementById('lyrics').textContent = 'Failed to load lyrics.';
+                        });
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <h3>List of songs</h3>
+    <div id="song-list">
+    {% for song in songs %}
+        <div class="song" data-id="{{ loop.index0 }}">
+            <a href="/lyrics/{{ song['id'] }}" data-id="{{ loop.index0 }}">
+                {{ song['author'] }} — {{ song['name'] }}
+            </a>
+        </div>
+    {% endfor %}
+    </div>
+    <div id="lyrics" style="margin-top: 20px; font-style: italic;"></div>
+</body>
+</html>

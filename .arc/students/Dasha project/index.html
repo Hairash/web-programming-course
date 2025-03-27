@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<title> Попытка не пытка(головоломка) </title>
+</head>
+<body>
+	<label><h1>score<h1></label>
+	<output id="winScore"></output>
+	<br>
+<script>
+	const li = ["green.jpg", "purple.jpg", "yellow.jpg", "vinous.jpg"];
+	
+	let clickCounter = 0;
+	let change;
+	let winScore = 0;
+	for (let x = 0; x < 7; x++) {
+		for (let y = 0; y < 7; y++) {
+			const randInt = Math.floor(Math.random() * li.length);
+			let img1 = document.createElement('IMG');
+			img1.setAttribute("src", li[randInt]);
+			img1.width = "60";
+			img1.height = "60";
+			img1.border = '5';
+			img1.setAttribute('data-x', x);
+			img1.setAttribute('data-y', y);
+			document.body.append(img1);
+			img1.addEventListener("click", function () {
+				clickCounter = clickCounter + 1;
+				if (clickCounter === 1) {
+					change = this;
+				}
+				if (clickCounter === 2) {
+					changeImgs(change, this);
+					fieldCheckHorizontal();
+					fieldCheckVertical();
+					fallDown();
+					win();
+					addition();
+					clickCounter = 0;
+				}
+			});
+		}
+
+		let br = document.createElement('BR');
+		document.body.append(br);
+	}
+
+	fieldCheckVertical();
+	fieldCheckHorizontal();
+	fallDown();
+	addition();
+
+
+	/*функции*/
+	function fieldCheckVertical() {
+		for (let y = 0; y < 7; y++) {
+			for (let x = 0; x < 5; x++) {
+				img1 = document.querySelector(`img[data-x="${x}"][data-y="${y}"]`);
+				img2 = document.querySelector(`img[data-x="${x + 1}"][data-y="${y}"]`);
+				img3 = document.querySelector(`img[data-x="${x + 2}"][data-y="${y}"]`);
+				if ((img1.src === img2.src) && (img1.src === img3.src)) {
+					img1.src = "none";
+					img2.src = "none";
+					img3.src = "none";
+					winScore = winScore + 1;
+					outputScore(winScore);
+				}
+			}
+		}
+	}
+	
+	function fieldCheckHorizontal() {
+		for (let x = 0; x < 7; x++) {
+			for (let y = 0; y < 5; y++) {
+				img1 = document.querySelector(`img[data-x="${x}"][data-y="${y}"]`);
+				img2 = document.querySelector(`img[data-x="${x}"][data-y="${y + 1}"]`);
+				img3 = document.querySelector(`img[data-x="${x}"][data-y="${y + 2}"]`);
+				if ((img1.src === img2.src) && (img1.src === img3.src)) {
+					img1.src = "none";
+					img2.src = "none";
+					img3.src = "none";
+					winScore = winScore + 1;
+					outputScore(winScore);
+				}
+			}
+		}
+	}
+	
+	function addition() {
+		for (let y = 0; y < 7; y++) {
+			for (let x = 0; x < 7; x++) {
+				let img = document.querySelector(`img[data-x="${x}"][data-y="${y}"]`);
+				let srcNone = "file:///C:/Users/Daria/Desktop/Python%20school/none";
+				if(img.src===srcNone){
+					const randInt = Math.floor(Math.random() * li.length);
+					let src1 = li[randInt];
+					img.src=src1;
+					console.log('+');
+				}
+			}
+		}
+		
+	}
+
+	function fallDown() {
+		let allEmptyImgsUp = false;
+		let ctr2 = 0;
+		while (allEmptyImgsUp === false){
+			let ctr = 0;
+			ctr2++;
+			for (let y = 0; y < 7; y++) {
+				for (let x = 0; x < 6; x++) {
+					//console.log("FallDown1");
+					let img1 = document.querySelector(`img[data-x="${x}"][data-y="${y}"]`);
+					let img2 = document.querySelector(`img[data-x="${x+1}"][data-y="${y}"]`);
+					let srcNone = "file:///C:/Users/Daria/Desktop/Python%20school/none";
+					//console.log(img2.src,srcNone);
+					if(img2.src===srcNone){
+						changeImgs(img1,img2);
+						ctr++;
+					}
+				}
+			}
+			if (ctr === 0 || ctr2 === 500){
+				allEmptyImgsUp = true;
+				winScore = 0;
+			}
+		}
+		
+	}
+	
+	function changeImgs(img1,img2){
+		const changeSrc = img2.src;
+		img2.src = img1.src;
+		img1.src = changeSrc;
+		fieldCheckHorizontal();
+		fieldCheckVertical();
+	}
+
+	function win() {
+		if (winScore > 15) {
+			console.log("win");
+		}
+	}
+	
+	function outputScore(score){
+		document.getElementById("winScore").innerHTML = score;
+	}
+</script>
+	<style type="text/css">
+		body {
+			color: black;
+		}
+	</style>
+</body>
+</html>

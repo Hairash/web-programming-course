@@ -1,0 +1,20 @@
+create table users (
+    id integer primary key,
+    name varchar(40) not null,
+    score integer
+);
+
+INSERT INTO users (id, name, score)
+VALUES(1, 'Sasha', 100500);
+
+INSERT INTO users (id, name, score)
+VALUES(2, 'Anya', 200600);
+
+UPDATE users
+SET score = 300000
+WHERE name = 'Anya';
+
+UPDATE users
+SET score = 500000;
+
+delete from users where name = 'Sasha';
