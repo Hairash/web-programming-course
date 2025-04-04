@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script>
+    function handleClick() {
+      fetch('/appointments', {
+        method: "POST",
+        body: document.querySelector('#userSurname').value,
+      })
+          // Double then required here
+          .then(response => response.json())
+          .then(data => {
+            console.log(data);
+          })
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const button = document.querySelector('button');
+      button.addEventListener('click', handleClick);
+    });
+
+  </script>
+</head>
+<body>
+  <h1>Welcome to the Hospital!</h1>
+  <a href="/about">About</a>
+  <br>
+  <a href="/appointments">Appointments</a>
+  <p>Введите вашу фамилию</p>
+  <input type="text" name="surname" id="userSurname" placeholder="Enter your surname">
+  <button>Submit</button>
+
+<!-- Bad, but working solution -->
+
+<!--  <form action="/appointments" method="POST">-->
+<!--    <p>Введите вашу фамилию</p>-->
+<!--    <input type="text" name="surname" placeholder="Enter your surname">-->
+<!--    <button type="submit">Submit</button>-->
+<!--  </form>-->
+  <p id="userList">
+    Appointments:
+    {% for appointment in appointments %}
+    <li>
+      <em>{{ appointment }}</em>
+    </li>
+    {% endfor %}
+  </p>
+</body>
+</html>
