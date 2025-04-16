@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script>
+    function handleClick() {
+      fetch('/appointments', {
+        method: "POST",
+        body: document.querySelector('#userSurname').value,
+      })
+        // Double then required here
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          const newElSurname = data[data.length - 1];
+          const myList = document.getElementById('userList');
+          const newEl = document.createElement('li');
+          myList.appendChild(newEl);
+          newEl.innerHTML = `<li><em>${newElSurname}</em></li>`;
+        })
+    }
+
+    function clearList() {
+      const myList = document.getElementById('userList');
+      // myList.innerHTML = '';
+      myList.remove();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const submitBtn = document.getElementById('submit');
+      submitBtn.addEventListener('click', handleClick);
+      const deleteBtn = document.getElementById('delete');
+      deleteBtn.addEventListener('click', clearList);
+    });
+
+  </script>
+</head>
+<body>
+  <h1>Welcome to the Hospital!</h1>
+  <a href="/about">About</a>
+  <br>
+  <a href="/appointments">Appointments</a>
+  <p>Введите вашу фамилию</p>
+  <input type="text" name="surname" id="userSurname" placeholder="Enter your surname">
+  <button id="submit">Submit</button>
+  <button id="delete">Clear list</button>
+
+<!-- Bad, but working solution -->
+
+<!--  <form action="/appointments" method="POST">-->
+<!--    <p>Введите вашу фамилию</p>-->
+<!--    <input type="text" name="surname" placeholder="Enter your surname">-->
+<!--    <button type="submit">Submit</button>-->
+<!--  </form>-->
+  <p>Appointments:</p>
+  <ul id="userList">
+    {% for appointment in appointments %}
+    <li>
+      <em>{{ appointment }}</em>
+    </li>
+    {% endfor %}
+  </ul>
+</body>
+</html>
