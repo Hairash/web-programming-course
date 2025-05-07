@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="../static/game.js"></script>
+  <link href="../static/style.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+</head>
+<body>
+  Welcome, <span id="player-name"></span>!<br>
+  <div id="lobby">
+    <h1>Wait for players...</h1>
+    <p>Players in lobby:</p>
+    <div id="lobby-players"></div>
+    <button
+        id="start-game"
+        class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+    >Start Game</button>
+  </div>
+  <div id="game" style="display: none;">
+    <div
+        id="table"
+        class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm"
+    ></div>
+    <div id="actions"></div>
+    <div>
+      Current player: <span id="current-player"></span><br>
+    </div>
+  </div>
+</body>
+</html>
