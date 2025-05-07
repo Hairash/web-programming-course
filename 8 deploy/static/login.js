@@ -1,10 +1,8 @@
-let token = null;
-
-document.addEventListener('DOMContentLoaded', function() {  // The same as window.onload()
+document.addEventListener('DOMContentLoaded', function() {
   const registrationForm = document.getElementById('login-form');
   registrationForm.addEventListener('submit', function(event) {
-    event.preventDefault();  // Prevent the default form submission as we will handle it manually with JavaScript
-    const formData = new FormData(registrationForm);  // Create a FormData object from the form - gather all the data from inputs
+    event.preventDefault();
+    const formData = new FormData(registrationForm);
     fetch('/login', {
       method: 'POST',
       body: formData
@@ -14,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {  // The same as windo
         console.log(data);
         if (data.success) {
           alert('Login successful!');
-          // token = data.token; // Store the token
+          // TODO: redirect to the game page
         } else {
           alert('Login failed: ' + data.message);
         }
@@ -22,6 +20,3 @@ document.addEventListener('DOMContentLoaded', function() {  // The same as windo
       .catch(error => console.error('Error:', error));
   });
 });
-
-// Next requests - should include the token in the headers
-// fetch(..., token

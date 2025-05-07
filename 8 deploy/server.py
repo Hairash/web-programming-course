@@ -1,28 +1,37 @@
+import os  # import os to access environment variables
 import random
-from flask import Flask, request, session, render_template, redirect  # import session to manage user sessions
+from flask import Flask, request, session, render_template, redirect
 
-from flask_sqlalchemy import SQLAlchemy  # import SQLAlchemy to manage the database
+from flask_sqlalchemy import SQLAlchemy
 
-app = Flask('authentication')
-app.secret_key = 'supersecretkey'  # Required for session management
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'  # SQLite database - the file will be created in the same directory
-db = SQLAlchemy(app)  # Initialize the database - this will create the database file if it doesn't exist
+app = Flask('sticks_game')
+app.secret_key = os.getenv('SECRET_KEY')  # Get the secret key from environment variables
+# To set environment variables locally you can use a command like this:
+# `export SECRET_KEY=yourkey`
+# To set it in Render you can go to the settings of your service and add it there
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+db = SQLAlchemy(app)
 
 
-class User(db.Model):  # Define the User model - related to the table in the database
-    id = db.Column(db.Integer, primary_key=True)  # You may specify any columns there
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
 
 
-with app.app_context():  # Create the database and tables
+with app.app_context():
     db.create_all()
 
 
+# Game states - may be done as strings, but this is more clear
 class GAME_STATES:
     LOBBY = 'lobby'
     PLAYING = 'playing'
 
+
+# Way to store game data. You can use a dict instead or even global variables.
+# Sometimes it makes sense to store game data in the database
 class GameData:
     state = GAME_STATES.LOBBY
     players = set()
@@ -32,6 +41,7 @@ class GameData:
     current_player_idx = 0
 
 
+#### Pages
 @app.route('/')
 def index():
     return render_template('login.html')
@@ -40,11 +50,13 @@ def index():
 @app.route('/game')
 def game():
     if 'username' in session:
-        GameData.players.add(session['username'])  # Add the logged-in user to the players set
+        # TODO: Don't add players when the game is already started
+        GameData.players.add(session['username'])
         return render_template('game.html')
     return redirect('/')
 
 
+#### API calls
 @app.route('/game_data', methods=['GET'])
 def game_data():
     if 'username' in session:
@@ -90,19 +102,20 @@ def action():
         if action in GameData.actions and GameData.sticks - action >= 0:
             GameData.sticks -= action
             GameData.current_player_idx = (GameData.current_player_idx + 1) % len(GameData.players_queue)
+            # TODO: Add winning condition and start new game
 
     return {'event': 'Not logged in', 'success': False}
 
-@app.route('/login', methods=['GET', 'POST'])
+
+#### Authentication
+@app.route('/login', methods=['POST'])
 def login():
     username = request.form.get('username')
     password = request.form.get('password')
 
-    print(User.query.all())
     user = User.query.filter_by(name=username).first()
-    print(user)
     if user and user.password == password:
-        session['username'] = username  # Store the username in the session
+        session['username'] = username
         return {'event': 'Login successful', 'success': True}
 
     return {'event': 'Login failed', 'success': False}
@@ -114,14 +127,21 @@ def register():
     password = request.form.get('password')
 
     print(User.query.all())  # Not needed, just for debugging
-    if User.query.filter_by(name=username).first():  # Filter the User table by username
+    if User.query.filter_by(name=username).first():
         return 'User already exists'
 
-    new_user = User(name=username, password=password)  # Create a new user instance
-    db.session.add(new_user)  # Add the new user to the database session (don't confuse with the browser session)
-    db.session.commit()  # Commit the database session to save the new user to the database
+    new_user = User(name=username, password=password)
+    db.session.add(new_user)
+    db.session.commit()
     return 'User registered successfully'
 
 
+@app.route('/logout', methods=['POST'])
+def logout():
+    # TODO: Add logout functionality
+    session.pop('username', None)
+
+
+# This is very important to run the app with unicorn on Render
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
