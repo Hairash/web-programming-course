@@ -1,5 +1,10 @@
 import os
 import random
+
+import eventlet
+
+eventlet.monkey_patch()  # Required for WebSocket support
+
 from flask import Flask, request, session, render_template, redirect
 # Don't forget to add flask-socketio to your requirements.txt
 from flask_socketio import SocketIO, emit  # import SocketIO for real-time communication
@@ -10,7 +15,7 @@ app = Flask('sticks_game')
 app.secret_key = os.getenv('SECRET_KEY', 'topsecret')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 db = SQLAlchemy(app)
-socketio = SocketIO(app, cors_allowed_origins="*")  # Initialize SocketIO with CORS support
+socketio = SocketIO(app, async_mode='eventlet', cors_allowed_origins="*", message_compression=True)  # Initialize SocketIO with CORS support
 
 
 class User(db.Model):
